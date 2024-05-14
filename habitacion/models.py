@@ -18,7 +18,7 @@ class Room(models.Model):
     hotel = models.ForeignKey('hotel.Hotel', on_delete=models.CASCADE)
     type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    max_customers = models.IntegerField(default=1, null=False, blank=False)
+    max_customers = models.IntegerField(default=1, null=True, blank=True)
     
     def save(self, *args, **kwargs):
         if not self.price: 
