@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Room(models.Model):
-    name = models.CharField(max_length=100, blank=False, null=False, unique=True)
+    number = models.CharField(max_length=100, blank=False, null=False, unique=True)
     description = models.TextField()
     hotel = models.ForeignKey('hotel.Hotel', on_delete=models.CASCADE)
     CATEGORY = (
