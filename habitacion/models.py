@@ -8,6 +8,10 @@ class RoomType(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
     max_customers = models.IntegerField(null=False, blank=False)
 
+    def is_available(self, init_date, end_date):
+        from reservation.models import Reservation
+        return not Reservation.objects.filter(room__type=self, init_date__lte=end_date, end_date__gte=init_date).exists()
+    
     def __str__(self):
         return self.name
 
