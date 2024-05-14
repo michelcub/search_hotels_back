@@ -25,7 +25,20 @@ SECRET_KEY = 'django-insecure-9$#924otvktbj29#@r!11b!t$862&m^yl5e-&53ta^ms(%voj*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOW_ALL_ORIGINS=True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173"
+]
+
+
+
+CORS_ALLOW_HEADERS = [
+    'Accept',
+    'Accept-Encoding',
+    'Authorization',  # Asegúrate de incluir 'Authorization' aquí
+    'Content-Type',
+]
 
 
 # Application definition
@@ -50,12 +63,14 @@ CUSTOM_APPS = [
 THIRDS_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
+    "corsheaders",
 ]
 
 
 INSTALLED_APPS = BASE_APPS + CUSTOM_APPS + THIRDS_APPS
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,6 +78,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -121,9 +137,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    
 }
 
 

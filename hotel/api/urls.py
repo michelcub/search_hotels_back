@@ -4,5 +4,6 @@ from hotel.api.api import *
 
 urlpatterns = [
     path('', get_hotels, name='get_hotels'),
-    path('create/', create_hotel, name='create_hotel')
+    path('create/', create_hotel, name='create_hotel'),
+    path(":id/", get_hotel, name="get_hotel_by_id"),
 ]
