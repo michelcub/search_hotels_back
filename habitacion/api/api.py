@@ -62,16 +62,15 @@ def room_type_available(request):
         if not end_date:
             return Response({'error': 'end_date is required'}, status=status.HTTP_400_BAD_REQUEST)
         
-        rooms = RoomType.objects.filter(pk=hotel)
+       
+        rooms = RoomType.objects.filter(hotel=hotel)
         
         room_list_available = []
-        
         for room in rooms:
             if room.is_available(init_date, end_date):
                 room_list_available.append(room)
                 
         rooms = RoomTypeSerializer(room_list_available, many=True).data
-        
         if len(rooms) == 0:
             return Response({'error': 'No rooms available'}, status=status.HTTP_404_NOT_FOUND)
         
