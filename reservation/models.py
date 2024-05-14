@@ -9,12 +9,13 @@ from django.utils import timezone
 
 class Reservation(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    main_customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='main_customer_reservations', null=True, blank=True)
-    customers = models.ManyToManyField(User, related_name='customer_reservations', blank=True,  null=True)
+    main_customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='main_customer_reservations', null=False, blank=False)  
+    customers = models.ManyToManyField(User, related_name='customer_reservations', blank=True)
     init_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=False, blank=False)
     quantity = models.IntegerField(default=1)
-    created_at = models.DateTimeField(default=timezone.now) 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     def save(self, *args, **kwargs):
         # Verificar si ya existe una reserva para esta habitación en el mismo rango de fechas
