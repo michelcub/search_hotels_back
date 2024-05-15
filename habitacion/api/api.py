@@ -54,7 +54,8 @@ def room_type_available(request):
         hotel = request.query_params.get('hotel', None)
         init_date = request.query_params.get('init_date', None)
         end_date = request.query_params.get('end_date', None)
-
+        max_customers = request.query_params.get('max_customers', None)
+        
         if not hotel:
             return Response({'error': 'Hotel is required'}, status=status.HTTP_400_BAD_REQUEST)
         if not init_date:
@@ -65,10 +66,14 @@ def room_type_available(request):
        
         rooms = RoomType.objects.filter(hotel=hotel)
         
+        if max_customers:
+            rooms = rooms.filter(max_customers__gte=int(max_customers))
+            print(rooms)
         room_list_available = []
         for room in rooms:
             if room.is_available(init_date, end_date):
                 room_list_available.append(room)
+                
                 
         rooms = RoomTypeSerializer(room_list_available, many=True).data
         if len(rooms) == 0:
