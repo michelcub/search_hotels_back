@@ -7,8 +7,12 @@ class RoomType(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
     max_customers = models.IntegerField(null=False, blank=False)
+    img = models.URLField(null=True, blank=True, default='https://th.bing.com/th/id/R.af2f9ca645743af637cf120723573ffe?rik=5MW4ervdkavFiA&pid=ImgRaw&r=0')
 
     def is_available(self, init_date, end_date):
+        rooms = Room.objects.filter(type=self)
+        if not rooms:
+            return False
         from reservation.models import Reservation
         return not Reservation.objects.filter(room__type=self, init_date__lte=end_date, end_date__gte=init_date).exists()
     

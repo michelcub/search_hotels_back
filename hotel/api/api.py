@@ -5,8 +5,8 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Q
 
 
-from hotel.api.serializer import HotelSerializer
-from hotel.models import Hotel
+from hotel.api.serializer import HotelSerializer, ServicesSerializer
+from hotel.models import Hotel, Services
 
 
 @api_view(['GET'])
@@ -38,3 +38,16 @@ def get_hotel(request, id):
         return Response({'message': 'Hotel not found'}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_services(request, hotel_id):
+    print(hotel_id, '>>>>>>>>')
+    query = Services.objects.filter(hotel=hotel_id)
+    services = ServicesSerializer(query, many=True).data
+    
+    if len(services) == 0:
+        return Response({'message': 'No services found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    return Response(services, status=status.HTTP_200_OK)
