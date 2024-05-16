@@ -47,7 +47,21 @@ def create_reservation(request):
         if None in [room_type, hotel, total, init_date, end_date, payment_id]:
             return Response({'error': 'Missing required data'}, status=status.HTTP_400_BAD_REQUEST)
         
-        room = get_object_or_404(Room, pk=room_type['id'])
+        room = None
+        rooms = Room.objects.filter( type=room_type['id'])
+        print(rooms, '>>>>>>>>>>>>>>>>>>>>>A')
+        for room in rooms:
+            reservations = Reservation.objects.filter(room=room)
+            overlapping_reservations = reservations.filter(
+                init_date__lte=end_date,
+                end_date__gte=init_date
+            )
+            
+            if not overlapping_reservations:
+                # No overlap found, assign the room
+                room = room
+                break
+            
         payment = get_object_or_404(Payment, pk=payment_id)
         hotel = get_object_or_404(Hotel, pk=hotel)
         

@@ -10,11 +10,20 @@ class RoomType(models.Model):
     img = models.URLField(null=True, blank=True, default='https://th.bing.com/th/id/R.af2f9ca645743af637cf120723573ffe?rik=5MW4ervdkavFiA&pid=ImgRaw&r=0')
 
     def is_available(self, init_date, end_date):
-        rooms = Room.objects.filter(type=self)
-        if not rooms:
-            return False
         from reservation.models import Reservation
-        return not Reservation.objects.filter(room__type=self, init_date__lte=end_date, end_date__gte=init_date).exists()
+        # Obtenemos todas las habitaciones de este tipo
+        rooms = Room.objects.filter(type=self)
+        
+        # Verificamos si hay al menos una habitación disponible en el rango de fechas dado
+        for room in rooms:
+            # Verificamos si hay alguna reserva que se solape con las fechas proporcionadas
+            conflicting_reservations = Reservation.objects.filter(room=room, init_date__lte=end_date, end_date__gte=init_date)
+            if not conflicting_reservations.exists():
+                # Si no hay reservas que se solapen, la habitación está disponible
+                return True
+        
+        # Si llegamos a este punto, ninguna habitación estaba disponible
+        return False
     
     def __str__(self):
         return self.name

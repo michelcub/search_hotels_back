@@ -68,7 +68,7 @@ def room_type_available(request):
         
         if max_customers:
             rooms = rooms.filter(max_customers__gte=int(max_customers))
-            print(rooms)
+
         room_list_available = []
         for room in rooms:
             if room.is_available(init_date, end_date):
