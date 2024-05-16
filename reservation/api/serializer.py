@@ -10,6 +10,8 @@ class ReservationSerializer(serializers.ModelSerializer):
     hotel = HotelSerializer()
     services = ServicesSerializer(many=True)
     customers = UserSerializer(many=True)
+    main_customer = UserSerializer()
+    room = RoomSerializer()
     class Meta:
         model = Reservation
         fields = '__all__'

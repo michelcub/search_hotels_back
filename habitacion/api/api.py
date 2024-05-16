@@ -16,23 +16,23 @@ def room_list(request):
     try:
         rooms = Room.objects.all()
 
-        # Filtrar por tipo de habitación
+        
         type_param = request.query_params.get('type')
         if type_param:
             rooms = rooms.filter(type__name=type_param)
 
-        # Filtrar por disponibilidad de fechas
+        
         init_date = request.query_params.get('init_date')
         end_date = request.query_params.get('end_date')
         if init_date and end_date:
             rooms = [room for room in rooms if room.is_available(init_date, end_date)]
 
-        # Filtrar por nombre de hotel
+        
         hotel_param = request.query_params.get('hotel')
         if hotel_param:
             rooms = rooms.filter(hotel__name=hotel_param)
 
-        # Filtrar por número máximo de clientes
+        
         customers_param = request.query_params.get('customers')
         if customers_param:
             rooms = rooms.filter(max_customers__lte=customers_param)
