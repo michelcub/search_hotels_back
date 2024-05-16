@@ -14,7 +14,7 @@ from hotel.models import Hotel, Services
 def get_hotels(request):
     query = Hotel.objects.all()
     hotels = HotelSerializer(query, many=True).data
-    print(hotels)
+    
     if len(hotels) == 0:
         return Response({'message': 'No hotels found'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -43,7 +43,6 @@ def get_hotel(request, id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_services(request, hotel_id):
-    print(hotel_id, '>>>>>>>>')
     query = Services.objects.filter(hotel=hotel_id)
     services = ServicesSerializer(query, many=True).data
     

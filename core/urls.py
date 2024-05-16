@@ -15,4 +15,5 @@ urlpatterns = [
     path('api/v1/room/', include('habitacion.api.urls')),
     path('api/v1/reservation/', include('reservation.api.urls')),
     path('api/v1/payment/', include('payment.api.urls')),
+    path('api/v1/user/', include('user.api.urls')),
 ]
