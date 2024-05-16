@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models import Q
 
 class RoomType(models.Model):
     hotel = models.ForeignKey('hotel.Hotel', on_delete=models.CASCADE)
@@ -48,7 +48,17 @@ class Room(models.Model):
 
     def is_available(self, init_date, end_date):
         from reservation.models import Reservation
-        return not Reservation.objects.filter(room=self, init_date__lte=end_date, end_date__gte=init_date).exists()
+        
+        # Filtrar las reservas que se superponen con el rango de fechas especificado
+        reservations_overlap = Reservation.objects.filter(
+        room=self,
+        init_date__lte=end_date,
+        end_date__gte=init_date
+    )
+
+        
+        # Si no hay reservas que se superpongan, la habitación está disponible
+        return not reservations_overlap.exists()
         
     def __str__(self):
         return self.number + ' - ' + self.hotel.name + ' - ' + self.type.name + ' - ' + str(self.price)

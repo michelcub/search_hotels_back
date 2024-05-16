@@ -77,8 +77,11 @@ def room_type_available(request):
                 
         rooms = RoomTypeSerializer(room_list_available, many=True).data
         if len(rooms) == 0:
-            return Response({'error': 'No rooms available'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'No rooms available'}, status=status.HTTP_200_OK)
         
         return Response({'available': rooms}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    
+

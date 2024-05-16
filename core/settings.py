@@ -57,6 +57,7 @@ CUSTOM_APPS = [
     'habitacion',
     'reservation',
     'user',
+    'payment'
 ]
 
 

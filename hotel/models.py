@@ -9,6 +9,9 @@ class Hotel(models.Model):
     country = models.CharField(max_length=100, blank=False, null=False)
     city = models.CharField(max_length=100, blank=False, null=False)
     state = models.CharField(max_length=100, blank=False, null=False)
+    phone = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    
     
     def __str__(self):
         return self.name
