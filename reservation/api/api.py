@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
+from core.permissions import IsSuperUser
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
@@ -15,19 +16,34 @@ from reservation.api.serializer import ReservationSerializer
 import uuid
 
 @api_view(['GET'])
+@permission_classes([IsSuperUser])
 def reservation_list(request):
-    print(request.user, '>>>>>>')
     try:
         reservations = Reservation.objects.all()
-        
-        
-        
-        
         reservations_data = ReservationSerializer(reservations, many=True).data
         return Response(reservations_data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
       
+
+@api_view(['GET'])
+def get_reservation_by_user(request, id):
+    
+    user = User.objects.get(pk=id)
+    
+    if not user:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    reservations = Reservation.objects.filter(main_customer=user)
+   
+    reservation_data = ReservationSerializer(reservations, many=True).data
+    
+    if len(reservation_data) == 0:
+        return Response({'error': 'No reservations found'}, status=status.HTTP_200_OK)
+    
+    return Response(reservation_data, status=status.HTTP_200_OK)
+    
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -49,7 +65,6 @@ def create_reservation(request):
         
         room = None
         rooms = Room.objects.filter( type=room_type['id'])
-        print(rooms, '>>>>>>>>>>>>>>>>>>>>>A')
         for room in rooms:
             reservations = Reservation.objects.filter(room=room)
             overlapping_reservations = reservations.filter(
@@ -106,7 +121,6 @@ def create_reservation(request):
         
         return Response(ReservationSerializer(reservation).data, status=status.HTTP_201_CREATED)
     except Exception as e:
-        print('error al crear la reserva>>>>>>>>>>>>', str(e))
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         
@@ -122,13 +136,12 @@ def delete_reservation(request, id):
         reservation.delete()
         
         reservations = Reservation.objects.all()
-        print(reservations, '>>>>>>>>>>>>>>>>>>>>>')
         reservations_data = ReservationSerializer(reservations, many=True).data
         
         if len(reservations_data) == 0:
             return Response({'reservations':reservations_data}, status=status.HTTP_200_OK) 
         
-        print(reservations_data, '>>>>>>>>>>>>>>>>>>>>>')
+        
         return Response({'reservations':reservations_data},status=status.HTTP_200_OK)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
